@@ -42,7 +42,7 @@ include("init_params.jl")
 include("rte_development/rte_development.jl")
 # this should only exist in branches that are not main.
 function __init__()
-    @info "You are using a dev branch of QuantumNaturalfPEPS"
+    @info "You are using a dev branch of QuantumNaturalGradient"
 end
 
 end # module QuantumNaturalGradient
