@@ -40,5 +40,9 @@ include("init_params.jl")
 
 # any files added by this branch are here.
 include("rte_development/rte_development.jl")
+# this should only exist in branches that are not main.
+function __init__()
+    @info "You are using a dev branch of QuantumNaturalfPEPS"
+end
 
 end # module QuantumNaturalGradient
