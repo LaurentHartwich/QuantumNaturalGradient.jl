@@ -23,8 +23,8 @@ solve_S(solver::AbstractSolver, J::Jacobian, grad_half::Vector; timer=TimerOutpu
 In the terms of https://arxiv.org/pdf/2503.12557, this returns θdot = (O' * O)^-1 * O' * E_loc   (Eq. 11)
 """
 function solve_S(solver::AbstractSolver, J::Jacobian, grad_half::Vector; timer=TimerOutput(), kwargs...)
-    @timeit "dense_S" Jd = dense_S(J)
-    @timeit "solve" θdot = -solver(Jd, grad_half; kwargs...)
+    @timeit timer "dense_S" Jd = dense_S(J)
+    @timeit timer "solve" θdot = -solver(Jd, grad_half; kwargs...)
     
     return θdot
 end
@@ -35,11 +35,10 @@ solve_T(solver::AbstractSolver, J::Jacobian, Es::EnergySummary; timer=TimerOutpu
 In the terms of https://arxiv.org/pdf/2503.12557, this returns θdot = O' * (O * O')^-1 * E_loc   (Eq. 13)
 """
 function solve_T(solver::AbstractSolver, J::Jacobian, Es::EnergySummary; timer=TimerOutput(), kwargs...)
-    @timeit "dense_T" Jd = dense_T(J)
+    @timeit timer "dense_T" Jd = dense_T(J)
     Ekms = centered(Es)
-
-    @timeit "solve" θdot_raw = -solver(Jd, Ekms; kwargs...)
-    θdot = centered(J)' * θdot_raw
+    @timeit timer "solve" θdot_raw = -solver(Jd, Ekms; kwargs...)
+    @timeit timer "mult." θdot = centered(J)' * θdot_raw
 
     return θdot
 end
