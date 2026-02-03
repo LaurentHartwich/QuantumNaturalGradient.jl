@@ -9,7 +9,7 @@ function (solver::AbstractSolver)(ng::NaturalGradient; method=:auto, compute_err
     if method === :T || (method === :auto && nr_samples(ng.J) < nr_parameters(ng.J))
         ng.θdot = solve_T(solver, ng.J, ng.Es; kwargs...)
     else
-        ng.θdot = solve_S(solver, ng.J, get_gradient(ng) ./ 2; kwargs...)
+        ng.θdot = solve_S(solver, ng.J, get_gradient_timeit_wrapper(ng; kwargs...) ./ 2; kwargs...)
     end
     if compute_error
         tdvp_error!(ng)
