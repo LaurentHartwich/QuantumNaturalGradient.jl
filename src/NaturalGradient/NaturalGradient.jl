@@ -173,12 +173,19 @@ function tdvp_relative_error(J::Jacobian, Es::EnergySummary, θdot::Vector)
 end
 
 function NaturalGradient_timeit_wrapper(θ, Oks_and_Eks_; kwargs...)
-    if kwargs[:timer] !== nothing
-        ng = @timeit kwargs[:timer] "NaturalGradient" NaturalGradient(θ, Oks_and_Eks_; kwargs...)
+    if haskey(kwargs, :timer) && kwargs[:timer] !== nothing
+        return @timeit kwargs[:timer] "NaturalGradient" NaturalGradient(θ, Oks_and_Eks_; kwargs...)
     else
-        ng = NaturalGradient(θ, Oks_and_Eks_; kwargs...)
+        return NaturalGradient(θ, Oks_and_Eks_; kwargs...)
     end
-    return ng
+end
+
+function get_gradient_timeit_wrapper(ng::NaturalGradient; kwargs...)
+    if haskey(kwargs, :timer) && kwargs[:timer] !== nothing
+        return @timeit kwargs[:timer] "get_gradient" get_gradient(ng)
+    else
+        return get_gradient(ng)
+    end
 end
 
 include("outlier.jl")
