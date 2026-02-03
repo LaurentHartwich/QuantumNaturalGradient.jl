@@ -9,13 +9,18 @@ mutable struct LinearSolveWrapper <: QuantumNaturalGradient.AbstractSolver
     LinearSolveWrapper(diagshift::Float64=1e-5, alg=KrylovJL_CG(); verbose=false, save_info=false) = new(diagshift, alg, verbose, save_info, nothing)
 end
 
-
 function (solver::LinearSolveWrapper)(M::AbstractMatrix, v::AbstractArray)
     #@assert ishermitian(M) "LinearSolveWrapper: M is not Hermitian"
     if solver.diagshift != 0
         M = Hermitian(M + I(size(M, 1)) * solver.diagshift)
     else
         M = Hermitian(M)
+    end
+
+    if eltype(M) != eltype(v)
+        if eltype(M) === ComplexF64
+            v = ComplexF64.(v)
+        end
     end
     
     prob = LinearProblem(M, v)
