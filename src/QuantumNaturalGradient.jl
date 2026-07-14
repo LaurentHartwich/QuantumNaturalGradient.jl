@@ -39,7 +39,8 @@ include("init_params.jl")
 
 # warns when using or importing the package from .julia/dev
 function __init__()
-    if occursin(".julia/dev/", pathof(QuantumNaturalGradient))
+    qng_path = pathof(QuantumNaturalGradient)
+    if qng_path !== nothing && occursin(".julia/dev/", qng_path)
         @warn "You are currently on the .julia/dev/ version of QuantumNaturalGradient."
         flush(stderr)
     end
